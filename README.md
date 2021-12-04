@@ -1,6 +1,7 @@
 # swaug-bot-wip
 
 start with nodemon bot.js
+
 prefix = .
 
 current active commands :
