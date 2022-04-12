@@ -3,12 +3,9 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
-//const bot1 = require('./bot.js');
-const db = require('./db.js');
-
+const bot1 = require('./bot.js');
 
 app.get("/", (req, res) => {
-    db.testdb();
     res.send("Hello World");
 });
 
