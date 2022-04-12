@@ -39,10 +39,9 @@ client.on("messageCreate", msg => {
          msg.channel.send('Playing...')
       };
 });
+
 // music.stop is a node module that deletes the current playing audio stream with the message interaction (short = msg)
-client.on("messageCreate", msg => { if (msg.content.toLowerCase().startsWith(prefix + "stop")) music.stop({ interaction: msg })});  
-
-
+client.on("messageCreate", msg => { if (msg.content.toLowerCase().startsWith(prefix + "stop")) music.stop({ interaction: msg })}); 
 
 
 client.on("messageCreate", msg => {
@@ -62,7 +61,15 @@ client.on("messageCreate", msg => {
     }
 });
 
-
+//Disconnected Normen.
+client.on("messageCreate",async  msg => {
+  if (msg.content.toLowerCase().startsWith(prefix + "normen")) {  
+      let userID = '322085600570245121'
+      let user = await msg.guild.members.fetch(userID);
+      user.voice.disconnect();
+      msg.channel.send('Hau rein.')
+  }
+});
 
 
 client.on('messageCreate', async (message) => {
