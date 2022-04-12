@@ -4,6 +4,8 @@ const { MessageEmbed } = require('discord.js');
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES","GUILD_VOICE_STATES"] })
 const auth = require('./auth.json');
 
+module.exports = {}
+
 client.on('ready', () => {
 console.log(`Logged in as ${client.user.tag}!`);
 });
