@@ -43,38 +43,80 @@ client.on("messageCreate", msg => {
 // music.stop is a node module that deletes the current playing audio stream with the message interaction (short = msg)
 client.on("messageCreate", msg => { if (msg.content.toLowerCase().startsWith(prefix + "stop")) music.stop({ interaction: msg })}); 
 
-
+// deletes a message from 1-99 with .prune
 client.on("messageCreate", msg => {
     let insertedNumber = msg.content.substr(7,8);
     if (msg.content.toLowerCase().startsWith(prefix + "prune")) {
-        if(insertedNumber <= 0 || insertedNumber >= 100) {
-            msg.channel.send('Range nur erlaubt zwischen 1-99.')
-        }else{
-            async function clear() {
-                msg.delete();
-                console.log(insertedNumber);
-                const fetched = await msg.channel.messages.fetch({limit: insertedNumber});
-                msg.channel.bulkDelete(fetched);
-            } 
-            clear();   
+        try {
+            if(insertedNumber <= 0 || insertedNumber >= 100) {
+                msg.channel.send('Range nur erlaubt zwischen 1-99.')
+            }else{
+                async function clear() {
+                    msg.delete();
+                    const fetched = await msg.channel.messages.fetch({limit: insertedNumber});
+                    msg.channel.bulkDelete(fetched);
+                    msg.channel.send('I removed ' + insertedNumber + ' Messages!')
+                } 
+                clear();
+            }
+            } catch(err) {
+                console.error(err);
         }
     }
 });
 
-//Disconnected Normen.
+//Disconnect Normen.
 client.on("messageCreate",async  msg => {
-  if (msg.content.toLowerCase().startsWith(prefix + "normen")) {  
+  if (msg.content.toLowerCase().startsWith(prefix + "normen")) {
+    try {
       let userID = '322085600570245121'
       let user = await msg.guild.members.fetch(userID);
       user.voice.disconnect();
       msg.channel.send('Hau rein.')
+    } catch(err) {
+        console.error(err);
+      }
   }
 });
 
+//Change nickname by random json input
+client.on("messageCreate", msg => {
+    if (msg.content.toLowerCase().startsWith(prefix + "random")) {
+        try {
+            if (!msg.guild.me.permissions.has('MANAGE_NICKNAMES')) return msg.reply('I\'m missing permissions.');
+            if (msg.author.id === msg.guild.ownerID) return msg.reply('I can\'t change your nickname.');
+                msg.member.setNickname(getRandomName());
+            } catch(err) {
+                console.error(err);
+            }
+        };
+        function getRandomName() {
+            let json = require('./games.json');
+            let randomNumber = Math.floor(Math.random()*json.length);
+                s = json[randomNumber].title
+                console.log(s);
+                s = s.substring(0, 32)
+            return s
+        }
+    });
+
+//Allows user to change their nickname
+client.on("messageCreate", msg => {
+    if (msg.content.toLowerCase().startsWith(prefix + "nick")) {
+        try {
+            let insertedName = msg.content.substring(6);
+            if (!msg.guild.me.permissions.has('MANAGE_NICKNAMES')) return msg.reply('I\'m missing permissions.');
+            if (msg.author.id === msg.guild.ownerID) return msg.reply('I can\'t change your nickname.');
+            console.log(insertedName);
+                msg.member.setNickname(insertedName);
+            } catch(err) {
+                console.error(err);
+            }
+        };
+  });
 
 client.on('messageCreate', async (message) => {
     if (message.content.startsWith(prefix + "info")){
-        
         let rolemap = message.guild.roles.cache
         .sort((a, b) => b.position - a.position)
         .map(r => r)
