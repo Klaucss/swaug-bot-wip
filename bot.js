@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const music = require('@koenie06/discord.js-music');
 const { MessageEmbed } = require('discord.js');
-const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES","GUILD_VOICE_STATES"] })
+const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES","GUILD_VOICE_STATES", "GUILD_MEMBERS"] })
 const auth = require('./auth.json');
 
 module.exports = {}
@@ -102,6 +102,50 @@ client.on("messageCreate", msg => {
         }
     });
 
+//resets all usernicknames on the server
+    client.on("messageCreate", msg => {
+        if (msg.content.toLowerCase().startsWith(prefix + "motto")) {
+            if (msg.author.id != msg.guild.ownerId) return msg.reply('Ne ist nicht Kollege Schnürschuh.');
+            const guild = client.guilds.resolve("390614129552916480");
+            guild.members.fetch().then(members =>
+                {
+                      // Loop through every members
+                    members.forEach(member =>
+                    {
+                        if (member.user.id != '263060033472823297') {
+                            member.setNickname("")
+                        }else{
+                            console.log("Chef übersprungen");
+                        }
+                    });
+                });
+        }});
+
+
+        //resets usernickname on the server
+    client.on("messageCreate", msg => {
+        if (msg.content.toLowerCase().startsWith(prefix + "reset")) {
+            const mentionedUser = msg.mentions
+            let person;
+            if (mentionedUser.users.size < 1) {
+                if (msg.author.id === msg.guild.ownerId) return msg.reply('Geht nicht Chef.');
+                person = msg.guild.members.cache.get(msg.author.id.toString())
+                msg.channel.send('Deine Name is nun wieder schmierig.');
+            }else{
+                if (msg.author.id === msg.guild.ownerId) {
+                    person = msg.mentions.members.first()
+                    msg.channel.send(`Deine Name wurde zurückgesetzt. ${person}`);
+                }else if(msg.author.id != msg.mentions.members.first().id){
+                    return msg.channel.send('Abgelehnt.');
+                }else{
+                    if (msg.author.id === msg.guild.ownerId) return msg.reply('Geht nicht Chef.');
+                    person = msg.mentions.members.first()
+                    msg.channel.send('Deine Name war [REDACTED].');
+                }
+            }
+            person.setNickname("");
+        }});
+       
 //Allows user to change their nickname
 client.on("messageCreate", msg => {
     if (msg.content.toLowerCase().startsWith(prefix + "nick")) {
@@ -117,8 +161,9 @@ client.on("messageCreate", msg => {
         };
   });
 
+//gives server info
 client.on('messageCreate', async (message) => {
-    if (message.content.startsWith(prefix + "info")){
+    if (message.content.startsWith(prefix + "server")){
         let rolemap = message.guild.roles.cache
         .sort((a, b) => b.position - a.position)
         .map(r => r)
@@ -143,9 +188,17 @@ client.on('messageCreate', async (message) => {
             message.channel.send({ embeds: [embedINFO] });
     }
 
-    if (message.content.includes(prefix + "me")){
-
-            let id = message.guild.members.cache.get(message.author.id.toString())
+    if (message.content.includes(prefix + "info")){
+        let id;
+        let avatar
+        const mentionedUser = message.mentions
+            if (mentionedUser.users.size < 1) {
+                id = message.guild.members.cache.get(message.author.id.toString())
+                avatar = message.author.avatarURL()
+            }else{
+                id = message.mentions.members.first()
+                avatar = message.mentions.members.first().user.avatarURL()
+            }
 
             let roles = id._roles
 
@@ -161,7 +214,7 @@ client.on('messageCreate', async (message) => {
             .setTitle('Usercard von ' + `${id.user.username}`)
             .setURL('https://mee6.xyz/leaderboard/390614129552916480/')
             .setAuthor(message.member.user.tag, message.guild.iconURL(), 'https://mee6.xyz/leaderboard/390614129552916480')
-            .setThumbnail(message.author.avatarURL())
+            .setThumbnail(avatar)
             .addFields(
                 { name: 'Username', value: `${id.user.username}` },
                 { name: 'Account Created:', value: `${dateT}` },
@@ -169,7 +222,7 @@ client.on('messageCreate', async (message) => {
                 { name: 'ID', value: `${id.id}`, inline: true },
             )
             .setTimestamp()
-            .setFooter('Footer',message.author.avatarURL());
+            .setFooter('Footer',avatar);
             message.channel.send({ embeds: [exampleEmbed] });
 
             convert(id.id)
