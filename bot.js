@@ -18,7 +18,7 @@ let prefix = "."
 let maikCounter = preLoad()
 let memberList = []
 let usedMember = []
-let counter = 84 
+let counter = 88 
 
 //Call function to add maik to counter
 client.on('messageCreate', async (msg) => {
@@ -31,7 +31,6 @@ client.on('messageCreate', async (msg) => {
     )
 
 client.on('messageCreate', async (msg) => {
-    console.log(msg.channel.id);
     if (msg.channel.id != myChannel) return
 
     // client.on messageCreate is a listener for the "prefix" + play argument from a chat input, it runs the function after the specific thing had been said in the channel
@@ -140,7 +139,7 @@ client.on('messageCreate', async (msg) => {
             }
       }
 
-      //Disconnects Normen.
+      /* //Disconnects Normen.
       if (msg.content.toLowerCase().startsWith(prefix + "normen")) {
         try {
         let userID = '322085600570245121'
@@ -150,7 +149,7 @@ client.on('messageCreate', async (msg) => {
         } catch(err) {
             console.error(err);
         }
-    }
+    } */
 
     //Gets how much maik has been said on the server
     if (msg.content.toLowerCase().startsWith(prefix + 'maik')) {
@@ -199,7 +198,7 @@ client.on('messageCreate', async (msg) => {
                         members.forEach(member =>
                         {
                             if (member.user.id != '263060033472823297') {
-                                member.setNickname(getRandomName())
+                                member.setNickname("")
                             }else{
                                 console.log("Chef übersprungen");
                             }
