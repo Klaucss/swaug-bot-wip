@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const bot1 = require('./bot.js');
+const bot1 = require('./bot1/bot1.js');
 
 app.get("/", (req, res) => {
     res.send("Hello World");

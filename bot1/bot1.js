@@ -1,11 +1,16 @@
 const Discord = require('discord.js');
-const music = require('@koenie06/discord.js-music');
-const { MessageEmbed } = require('discord.js');
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES","GUILD_VOICE_STATES", "GUILD_MEMBERS"] })
-const auth = require('./auth.json');
-const fs = require('fs');
+const auth = require('../auth.json');
 
-//Starts the bot
+const info = require('./bot1_functions/bot1_info');
+const maik = require('./bot1_functions/bot1_maik');
+const music = require('./bot1_functions/bot1_ytmusic');
+const nicks = require('./bot1_functions/bot1_nicknames');
+const normen = require('./bot1_functions/bot1_normen');
+const utils = require('./bot1_functions/bot1_utils');
+
+
+//Start the bot
 module.exports = {}
 client.login(auth.token);
 client.on('ready', () => {console.log(`Logged in as ${client.user.tag}!`)});
@@ -14,28 +19,96 @@ client.once("disconnect", () => {console.log("Disconnect!")});
 const myChannel = "546410932092534808"
 
 //Global variables
-let prefix = "."
-let maikCounter = preLoad()
-let memberList = []
-let usedMember = []
-let counter = 88 
+const prefix = ".";
+
+
+// client.on messageCreate is a listener for the "prefix" + argument from a chat input, it runs the function after the specific thing had been said in the channel
+client.on('messageCreate', async (msg) => {
+    
+    //Maikcounter call function
+    if (msg.content.toLowerCase().includes('maik') 
+    && !msg.content.toLowerCase().includes(prefix + 'maik') 
+    && !(msg.author.id === '630041615683026974')){
+        maik.addMaikToCounter();
+    }
+
+
+    //command handler
+    if(msg.content.toLowerCase().startsWith(prefix)){
+
+        let msg_cmd = msg.content.toLowerCase().split(" ")[0].slice(1);
+        
+        switch(msg_cmd){
+            //utils
+            case "prune":
+                await utils.deleteMessage(msg);
+                break;
+
+            //info
+            case "server":
+                await info.getServerInfo(msg);
+                break;
+            case "info":
+                await info.getUserInfo(msg);
+                break; 
+
+            //nicknames
+            case "resetU":
+                await nicks.resetUserNick(msg);
+                break; 
+            case "resetA":
+                await nicks.resetAllNicks(msg);
+                break; 
+            case "random":
+                await nicks.changeRandomNick(msg);
+                break;
+            case "nicka": 
+                await nicks.allowUserChangeNick(msg);
+                break; 
+
+            //ytmusic bot
+            case "play": 
+                await music.playMusic(msg); 
+                break; 
+            case "stop":
+                await music.stopMusic(msg);
+                break; 
+
+            //fun with members
+            case "maik":
+                console.log("maik")
+                maik.getMaikCounter(msg);
+                break; 
+            case "normen":
+                await normen.disconnect(msg);
+                break; 
+
+            default: 
+        }
+    }
+});
+
+
+//let maikCounter = preLoad()
+//let memberList = []
+//let usedMember = []
+//let counter = 88 
 
 //Call function to add maik to counter
-client.on('messageCreate', async (msg) => {
+/* client.on('messageCreate', async (msg) => {
     if (msg.content.toLowerCase().includes('maik')) {
         if (msg.content.toLowerCase().includes(prefix + 'maik')) return
             if (msg.author.id === '630041615683026974') return
                 addMaik();
             }
         }
-    )
+    ) */
 
-client.on('messageCreate', async (msg) => {
-    if (msg.channel.id != myChannel) return
+//client.on('messageCreate', async (msg) => {
+  //  if (msg.channel.id != myChannel) return
 
-    // client.on messageCreate is a listener for the "prefix" + play argument from a chat input, it runs the function after the specific thing had been said in the channel
     // music.play is a node module that creates a audio stream with the message interaction (short = msg)
-    if (msg.content.toLowerCase().startsWith(prefix + "play")) {
+/*     if (msg.content.toLowerCase().startsWith(prefix + "play")) {
         const channel = msg.member.voice.channel;
         const song = msg.content.split(" ")[1];
         msg.channel.send('Searching...')
@@ -45,13 +118,13 @@ client.on('messageCreate', async (msg) => {
             song: song
         });
         msg.channel.send('Playing...')
-    };
+    }; */
 
     // music.stop is a node module that deletes the current playing audio stream with the message interaction (short = msg)
-    if (msg.content.toLowerCase().startsWith(prefix + "stop")) music.stop({ interaction: msg })
+    //if (msg.content.toLowerCase().startsWith(prefix + "stop")) music.stop({ interaction: msg })
 
     //gives server info
-    if (msg.content.startsWith(prefix + "server")){
+/*     if (msg.content.startsWith(prefix + "server")){
         let rolemap = msg.guild.roles.cache
         .sort((a, b) => b.position - a.position)
         .map(r => r)
@@ -73,10 +146,10 @@ client.on('messageCreate', async (msg) => {
             .setTimestamp()
             .setFooter('',msg.author.avatarURL());
             msg.channel.send({ embeds: [embedINFO] });
-    }
+    } */
 
     //Gives info about the current user
-    if (msg.content.includes(prefix + "info")){
+/*     if (msg.content.includes(prefix + "info")){
         let id;
         let avatar
         const mentionedUser = msg.mentions
@@ -137,7 +210,7 @@ client.on('messageCreate', async (msg) => {
            
                dateT = day+ '.' + month + '.' + date.getFullYear();
             }
-      }
+      } */
 
       /* //Disconnects Normen.
       if (msg.content.toLowerCase().startsWith(prefix + "normen")) {
@@ -152,15 +225,15 @@ client.on('messageCreate', async (msg) => {
     } */
 
     //Gets how much maik has been said on the server
-    if (msg.content.toLowerCase().startsWith(prefix + 'maik')) {
+/*     if (msg.content.toLowerCase().startsWith(prefix + 'maik')) {
         if (msg.author.id === '630041615683026974') return
         const fileName = './maik.json';
         const file = require(fileName);
         msg.channel.send('Es wurde schon ' + file.maikCount + ' Maik gesagt')
-        }
+    } */
 
         // deletes a message from 1-99 with .prune
-        if (msg.content.toLowerCase().startsWith(prefix + "prune")) {
+/*         if (msg.content.toLowerCase().startsWith(prefix + "prune")) {
             let insertedNumber = msg.content.substr(7,8);
             if (msg.author.id != msg.guild.ownerId) return msg.reply('Ne ist nicht, Kollege Schnürschuh.');
                 try {
@@ -178,10 +251,10 @@ client.on('messageCreate', async (msg) => {
                 } catch(err) {
                     console.error(err);
                 }
-            }
+            } */
 
       //Change nickname by random user on the server
-      if (msg.content.toLowerCase().startsWith(prefix + "random")) {
+/*       if (msg.content.toLowerCase().startsWith(prefix + "random")) {
         try {
             if (msg.author.id != msg.guild.ownerId) return msg.reply('Ne ist nicht, Kollege Schnürschuh.');
             if (!msg.guild.me.permissions.has('MANAGE_NICKNAMES')) return msg.reply('Hab keine Berechtigung für "MANAGE_NICKNAMES"');
@@ -208,10 +281,10 @@ client.on('messageCreate', async (msg) => {
             } catch(err) {
                 console.error(err);
             }
-        };
+        }; */
 
       //Allows user to change their nickname
-      if (msg.content.toLowerCase().startsWith(prefix + "nick")) {
+/*       if (msg.content.toLowerCase().startsWith(prefix + "nick")) {
         try {
             let insertedName = msg.content.substring(6);
             return msg.reply('Sowas willste machen obwohl ein Mottomonat stattfindet?');
@@ -222,10 +295,10 @@ client.on('messageCreate', async (msg) => {
             } catch(err) {
                 console.error(err);
             }
-        };
+        }; */
         
         //resets usernickname on the server
-        if (msg.content.toLowerCase().startsWith(prefix + "reset")) {
+/*         if (msg.content.toLowerCase().startsWith(prefix + "reset")) {
             const mentionedUser = msg.mentions
             let person;
             if (mentionedUser.users.size < 1) {
@@ -263,12 +336,12 @@ client.on('messageCreate', async (msg) => {
                         }
                     });
                 });
-        }
+        } 
 
-    });
+    });*/
 
     //gets a random number
-    function randomNumberFunc(min, max) { // min and max included 
+/*     function randomNumberFunc(min, max) { // min and max included 
         return Math.floor(Math.random() * (max - min + 1) + min)
       }
     
@@ -282,10 +355,10 @@ client.on('messageCreate', async (msg) => {
             })
             if(s === undefined){s = "kaputt"}
             return s
-    }
+    } */
 
     //Added +1 Maik to the Maikcounter
-    function addMaik() {
+/*     function addMaik() {
         maikCounter++
         const fileName = './maik.json';
         const file = require(fileName);
@@ -294,11 +367,11 @@ client.on('messageCreate', async (msg) => {
             
         fs.writeFile(fileName, JSON.stringify(file), function writeJSON(err) {
         if (err) return console.log(err);
-    })};
+    })}; */
 
-    //Preloads the MaikCounter
+/*     //Preloads the MaikCounter
     function preLoad() {
         const fileName = './maik.json';
         const file = require(fileName);
         return file.maikCount
-    }
+    } */
