@@ -76,7 +76,6 @@ client.on('messageCreate', async (msg) => {
 
             //fun with members
             case "maik":
-                console.log("maik")
                 maik.getMaikCounter(msg);
                 break; 
             case "normen":
