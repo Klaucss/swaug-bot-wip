@@ -24,7 +24,7 @@ function getMaikCounter(msg){
     const file = require(filePath);
 
 
-    msg.channel.send('Es wurde schon ' + file.maikCount + ' Maik gesagt')
+    msg.channel.send('Es wurde schon ' + file.maikCount + ' mal Maik gesagt.')
 }
 
 //Preload the Maikcounter

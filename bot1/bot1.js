@@ -16,14 +16,35 @@ client.login(auth.token);
 client.on('ready', () => {console.log(`Logged in as ${client.user.tag}!`)});
 client.once("reconnecting", () => {console.log("Reconnecting!")});
 client.once("disconnect", () => {console.log("Disconnect!")});
-const myChannel = "546410932092534808"
+
+
+const myChannel = "546410932092534808";
 
 //Global variables
 const prefix = ".";
 
+//check if message author is connected to server
+function isConnected(user_id){
+    const guild = client.guilds.cache.get('390614129552916480');
+    let res = false; 
+    guild.members.cache.each(e => {
+        console.log("guild-member: ", e.user.id);
+        if(e.user.id === user_id) res = true; 
+    });
+    return res; 
+}
 
-// client.on messageCreate is a listener for the "prefix" + argument from a chat input, it runs the function after the specific thing had been said in the channel
+//client.on messageCreate is a listener for the "prefix" + argument from a chat input, it runs the function after the specific thing had been said in the channel
 client.on('messageCreate', async (msg) => {
+
+    console.log("msg uid: ", msg.author.id)
+
+    //restrict commands to user connected to server
+    if(!isConnected(msg.author.id)) return;
+
+
+    //restrict commands to one channel
+    if (msg.channel.id != myChannel) return;
     
     //Maikcounter call function
     if (msg.content.toLowerCase().includes('maik') 
@@ -73,6 +94,27 @@ client.on('messageCreate', async (msg) => {
             case "stop":
                 await music.stopMusic(msg);
                 break; 
+            case "pause":
+                await music.pauseMusic(msg);
+                break; 
+            case "resume":
+                await music.resumeMusic(msg);
+                break;
+            case "skip": 
+                await music.skipTrack(msg);
+                break;
+            case "loop": case "repeat":
+                await music.loopTrack(msg);
+                break; 
+            case "queue": case "playlist":
+                await music.getQueue(msg);
+                break; 
+            case "removeQueue": case "removePlaylist":
+                await music.removeTrackFromQueue(msg);
+                break;
+            case "jump":
+                await music.jumpInQueue(msg);
+                break;
 
             //fun with members
             case "maik":
