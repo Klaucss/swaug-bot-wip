@@ -7,17 +7,17 @@ async function resetUserNick(msg){
     const mentionedUser = msg.mentions
     let person;
     if (mentionedUser.users.size < 1) {
-        if (!(await permissions.checkOwner(msg))) return msg.reply('Geht nicht Chef.');
+        if (!(await permissions.isOwner(msg))) return msg.reply('Geht nicht Chef.');
         person = msg.guild.members.cache.get(msg.author.id.toString())
         msg.channel.send('Deine Name is nun wieder schmierig.');
     }else{
-        if (await permissions.checkOwner(msg)) {
+        if (await permissions.isOwner(msg)) {
             person = msg.mentions.members.first()
             msg.channel.send(`Deine Name wurde zurückgesetzt. ${person}`);
         }else if(msg.author.id != msg.mentions.members.first().id){
             return msg.channel.send('Abgelehnt.');
         }else{
-            if (await permissions.checkOwner(msg)) return msg.reply('Geht nicht Chef.');
+            if (await permissions.isOwner(msg)) return msg.reply('Geht nicht Chef.');
             person = msg.mentions.members.first()
             msg.channel.send('Deine Name war [REDACTED].');
         }
@@ -27,7 +27,7 @@ async function resetUserNick(msg){
 
 //reset all nicknames on the server to their default
 async function resetAllNicks(msg){
-    if (!(await permissions.checkOwner(msg))) return msg.reply('Ne ist nicht, Kollege Schnürschuh.');
+    if (!(await permissions.isOwner(msg))) return msg.reply('Ne ist nicht, Kollege Schnürschuh.');
     const guild = client.guilds.resolve("390614129552916480");
     guild.members.fetch().then(members =>
     {
@@ -49,7 +49,7 @@ async function changeRandomNick(msg){
     let usedMember = [];
 
     try {
-        if (!(await permissions.checkOwner)) return msg.reply('Ne ist nicht, Kollege Schnürschuh.');
+        if (!(await permissions.isOwner)) return msg.reply('Ne ist nicht, Kollege Schnürschuh.');
         if (!msg.guild.me.permissions.has('MANAGE_NICKNAMES')) return msg.reply('Hab keine Berechtigung für "MANAGE_NICKNAMES"');
         const guild = client.guilds.resolve("390614129552916480");
         guild.members.fetch().then(members =>
@@ -81,7 +81,7 @@ async function allowUserChangeNick(msg){
         let insertedName = msg.content.substring(6);
         return msg.reply('Sowas willste machen obwohl ein Mottomonat stattfindet?');
         if (!msg.guild.me.permissions.has('MANAGE_NICKNAMES')) return msg.reply('I\'m missing permissions.');
-        if (await permissions.checkOwner) return msg.reply('I can\'t change your nickname.');
+        if (await permissions.isOwner) return msg.reply('I can\'t change your nickname.');
         console.log(insertedName);
             msg.member.setNickname(insertedName);
     } catch(err) {

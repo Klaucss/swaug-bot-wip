@@ -6,30 +6,37 @@ const music = require('@koenie06/discord.js-music');
 async function playMusic(msg){
     const channel = msg.member.voice.channel;
     const song = msg.content.slice(6)
-    //msg.channel.send('Searching...')
     music.play({
         interaction: msg,
         channel: channel,
         song: song
     });
-    //msg.channel.send('Playing...')
 }
+
+music.event.on('playSong', async (channel, songInfo, requester) => {
+    channel.send(`Ich spiele nun ${songInfo.title} ab.`);
+    console.log(songInfo);
+});
 
 // music.stop is a node module that deletes the current playing audio stream with the message interaction (short = msg)
 async function stopMusic(msg){
     music.stop({interaction: msg});
+    msg.channel.send('Ciao Kakao.');
 }
 
 async function pauseMusic(msg){
     music.pause({interaction: msg});
+    msg.channel.send('Päuschen.');
 }
 
 async function resumeMusic(msg){
     music.resume({interaction: msg});
+    msg.channel.send('Weiter gehts.')
 }
 
 async function skipTrack(msg){
     music.skip({interaction: msg});
+    msg.channel.send('Lied übersprungen.')
 }
 
 async function loopTrack(msg){
@@ -39,15 +46,21 @@ async function loopTrack(msg){
             interaction: msg,
             value: value
         });
-    }catch{}
+
+        let txt;
+        if(value){
+            txt = "an";
+        }else{
+            txt = "aus";
+        }
+        msg.channel.send('loop '+ txt)
+    }catch(err){
+        console.log('loop error: ', err);
+    }
 }
 
 async function getQueue(msg){
     const queue = await music.getQueue({interaction: msg});
-/*    let titles = [];
-    queue.forEach(e => titles.push(e.info.title));
-    console.log("tracks: ", titles);
-    msg.channel.send(titles); */
     for(let i=0; i<=9; i++){
         msg.channel.send(i+1 + " - " + queue[i].info.title);
     }

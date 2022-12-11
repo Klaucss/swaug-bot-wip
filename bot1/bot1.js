@@ -1,13 +1,14 @@
 const Discord = require('discord.js');
-const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES","GUILD_VOICE_STATES", "GUILD_MEMBERS"] })
-const auth = require('../auth.json');
+const client  = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES","GUILD_VOICE_STATES", "GUILD_MEMBERS"] })
+const auth    = require('../auth.json');
 
-const info = require('./bot1_functions/bot1_info');
-const maik = require('./bot1_functions/bot1_maik');
-const music = require('./bot1_functions/bot1_ytmusic');
-const nicks = require('./bot1_functions/bot1_nicknames');
-const normen = require('./bot1_functions/bot1_normen');
-const utils = require('./bot1_functions/bot1_utils');
+const info        = require('./bot1_functions/bot1_info');
+const maik        = require('./bot1_functions/bot1_maik');
+const music       = require('./bot1_functions/bot1_ytmusic');
+const nicks       = require('./bot1_functions/bot1_nicknames');
+const normen      = require('./bot1_functions/bot1_normen');
+const permissions = require('./bot1_permissions');
+const utils       = require('./bot1_functions/bot1_utils');
 
 
 //Start the bot
@@ -17,39 +18,33 @@ client.on('ready', () => {console.log(`Logged in as ${client.user.tag}!`)});
 client.once("reconnecting", () => {console.log("Reconnecting!")});
 client.once("disconnect", () => {console.log("Disconnect!")});
 
-
-const myChannel = "546410932092534808";
-
-//Global variables
+//Global constants
 const prefix = ".";
 
-//check if message author is connected to server
-function isConnected(user_id){
-    const guild = client.guilds.cache.get('390614129552916480');
-    let res = false; 
-    guild.members.cache.each(e => {
-        console.log("guild-member: ", e.user.id);
-        if(e.user.id === user_id) res = true; 
-    });
-    return res; 
-}
+const guild_id    = '390614129552916480';
+const bot_channel = '546410932092534808';
+const bot_id      = '630041615683026974';
+
 
 //client.on messageCreate is a listener for the "prefix" + argument from a chat input, it runs the function after the specific thing had been said in the channel
 client.on('messageCreate', async (msg) => {
 
-    console.log("msg uid: ", msg.author.id)
+    //block messages from bot
+    if(msg.author.id === bot_id) return; 
 
-    //restrict commands to user connected to server
-    if(!isConnected(msg.author.id)) return;
-
+    //restrict commands to user connected to a voice channel
+    if(!permissions.isInVoiceChannel(msg.author.id, guild_id, client)){ 
+        msg.author.send("Einfach nein.")
+        return;
+    }
 
     //restrict commands to one channel
-    if (msg.channel.id != myChannel) return;
+    if (msg.channel.id != bot_channel) return;
     
     //Maikcounter call function
     if (msg.content.toLowerCase().includes('maik') 
     && !msg.content.toLowerCase().includes(prefix + 'maik') 
-    && !(msg.author.id === '630041615683026974')){
+    && !(msg.author.id === bot_id)){
         maik.addMaikToCounter();
     }
 

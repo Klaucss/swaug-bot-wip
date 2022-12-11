@@ -5,7 +5,7 @@ const permissions = require('../bot1_permissions');
 //delete message from 1 to 99
 async function deleteMessage(msg){
     let insertedNumber = msg.content.substr(7,8);
-    if (!(await permissions.checkOwner(msg))) return msg.reply('Ne ist nicht, Kollege Schnürschuh.');
+    if (!(await permissions.isOwner(msg))) return msg.reply('Ne ist nicht, Kollege Schnürschuh.');
     try {
         if(insertedNumber <= 1 || insertedNumber >= 100) {
             msg.channel.send('Range erlaubt nur 2-99.')
