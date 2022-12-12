@@ -32,12 +32,6 @@ client.on('messageCreate', async (msg) => {
     //block messages from bot
     if(msg.author.id === bot_id) return; 
 
-    //restrict commands to user connected to a voice channel
-    if(!permissions.isInVoiceChannel(msg.author.id, guild_id, client)){ 
-        msg.author.send("Einfach nein.")
-        return;
-    }
-
     //restrict commands to one channel
     if (msg.channel.id != bot_channel) return;
     
@@ -51,6 +45,12 @@ client.on('messageCreate', async (msg) => {
 
     //command handler
     if(msg.content.toLowerCase().startsWith(prefix)){
+        
+        //restrict commands to user connected to a voice channel
+        if(!permissions.isInVoiceChannel(msg.author.id, guild_id, client)){ 
+            msg.author.send("Einfach nein.")
+            return;
+        }
 
         let msg_cmd = msg.content.toLowerCase().split(" ")[0].slice(1);
         
