@@ -1,5 +1,6 @@
 console.log("script ytmusic runs");
 
+const fs = require('fs');
 const music = require('@koenie06/discord.js-music');
 
 // music.play is a node module that creates a audio stream with the message interaction (short = msg)
@@ -13,10 +14,31 @@ async function playMusic(msg){
     });
 }
 
+// post song title in botchat
 music.event.on('playSong', async (channel, songInfo, requester) => {
-    channel.send(`Ich spiele nun ${songInfo.title} ab.`);
-    console.log(songInfo);
+    channel.send(`Ich spiele nun "${songInfo.title}" ab.`);
 });
+
+async function saveInfoToArray(songInfo){
+    const filePath = '../bot1_data/ytsong.json';
+    const filePathAbsolute = './bot1/bot1_data/ytsong.json';
+
+    const file = require(filePath);
+    
+    file.forEach(e => {
+        Object.entries(e).forEach(([key, value]) => {
+            if(key === songInfo.title){
+                value = (parseInt(value)++).toString();
+            }else{
+                file.songInfo = 1; 
+            }
+        });
+    });
+
+    fs.writeFile(filePathAbsolute, JSON.stringify(file), function writeJSON(err) {
+        if (err) return console.log(err);
+    })
+}
 
 // music.stop is a node module that deletes the current playing audio stream with the message interaction (short = msg)
 async function stopMusic(msg){
