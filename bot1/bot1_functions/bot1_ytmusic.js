@@ -96,7 +96,6 @@ async function getQueue(msg){
     for(let i=0; i<entrieCount; i++){
         msg.channel.send(i+1 + " - " + queue[i].info.title);
     }
-
 }
 
 async function removeTrackFromQueue(msg){
