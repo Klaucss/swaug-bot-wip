@@ -14,9 +14,14 @@ async function playMusic(msg){
     });
 }
 
-// post song title in botchat
+// post song title in botchat when playing
 music.event.on('playSong', async (channel, songInfo, requester) => {
     channel.send(`Ich spiele nun "${songInfo.title}" ab.`);
+});
+
+// post song title in botchat when adding to playlist
+music.event.on('addSong', async (channel, songInfo, requester) => {
+    channel.send(`"${songInfo.title}" zur Playlist hinzugefügt.`);
 });
 
 async function saveInfoToArray(songInfo){
@@ -83,9 +88,15 @@ async function loopTrack(msg){
 
 async function getQueue(msg){
     const queue = await music.getQueue({interaction: msg});
-    for(let i=0; i<=9; i++){
+    let entrieCount = 10; 
+
+    if(queue.length < entrieCount){
+        entrieCount = queue.length;
+    }
+    for(let i=0; i<entrieCount; i++){
         msg.channel.send(i+1 + " - " + queue[i].info.title);
     }
+
 }
 
 async function removeTrackFromQueue(msg){
