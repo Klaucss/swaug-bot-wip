@@ -29,19 +29,19 @@ const bot_id      = '630041615683026974';
 //client.on messageCreate is a listener for the "prefix" + argument from a chat input, it runs the function after the specific thing had been said in the channel
 client.on('messageCreate', async (msg) => {
 
-    //block messages from bot
-    if(msg.author.id === bot_id) return; 
-
-    //restrict commands to one channel
-    if (msg.channel.id != bot_channel) return;
-    
-    //Maikcounter call function
+    //listening for maik
     if (msg.content.toLowerCase().includes('maik') 
     && !msg.content.toLowerCase().includes(prefix + 'maik') 
     && !(msg.author.id === bot_id)){
         maik.addMaikToCounter();
     }
 
+    //block messages from bot
+    if(msg.author.id === bot_id) return; 
+
+    //restrict commands to one channel
+    if (msg.channel.id != bot_channel) return;
+    
 
     //command handler
     if(msg.content.toLowerCase().startsWith(prefix)){
