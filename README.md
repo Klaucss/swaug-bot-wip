@@ -1,4 +1,4 @@
-# swaug-bot-wip
+# SWAUG Central Discord Bot ( WORK IN PROGRESS )
 
 Node Based Discord Bot
 
