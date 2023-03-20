@@ -5,6 +5,7 @@ Node Based Discord Bot
 prefix = .
 
 Current active commands:
+
 .prune 1-99 ---> Deletes messages inside the current channel in a range of 1-99 messages
 
 .info ---> shows the server information
