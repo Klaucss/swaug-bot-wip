@@ -12,11 +12,11 @@ current active commands :
 
 .me ---> shows info about member that casted the command
 
-WIP commands:
-
 .play (url) ---> Bots joins and plays per FFMpeg the current url(probs youtube) as Audio.
 
 .switchNames[nameRandomizer] ---> for mottomonat yeah wup wup
+
+WIP commands:
 
 .throwCoin ---> KOPF ODER ZAHL
 
