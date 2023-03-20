@@ -1,27 +1,25 @@
 # swaug-bot-wip
 
-start with nodemon bot.js
-
+Node Based Discord Bot
 prefix = .
 
-current active commands :
+Current active commands:
+.prune 1-99 --_> Deletes messages inside the current channel in a range of 1-99 messages
 
-.prune 1-99 ---> Deletes messages inside the current using channel in a rang of 1-99.
+.info ---> shows the server information
 
-.info ---> shows info about server(Swaug-Central)
+.me ---> shows info about the mentioned member
 
-.me ---> shows info about member that casted the command
+.play (url) ---> Bots joins and plays per FFMpeg the current youtube url as audio
 
-.play (url) ---> Bots joins and plays per FFMpeg the current url(probs youtube) as Audio.
-
-.switchNames[nameRandomizer] ---> for mottomonat yeah wup wup
+.switchNames[nameRandomizer] ---> for "Mottomonat"
 
 WIP commands:
 
-.throwCoin ---> KOPF ODER ZAHL
+.throwCoin ---> Head or Tails
 
 .jokster ---> Random jokes 
 
-.pickapoison ---> generates a random youtube link per token generation.
+.pickapoison ---> generates a random youtube link per token generation
 
-.pickNumber [number] [number] ---> chooses a number or the number between those 2 values.
+.pickNumber [number] [number] ---> chooses a number between those 2 numbers
